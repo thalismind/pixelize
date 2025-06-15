@@ -1,3 +1,14 @@
+---
+title: Pixel Art Converter
+emoji: 🎨
+colorFrom: blue
+colorTo: purple
+sdk: gradio
+sdk_version: 4.0.0
+app_file: app.py
+pinned: false
+---
+
 # Pixel Art Converter
 
 A Python application that converts images into pixel art using Gradio for the user interface. The application supports both dynamic and fixed color palettes, with various color matching modes.
