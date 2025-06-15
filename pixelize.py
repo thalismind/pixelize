@@ -2,6 +2,7 @@ import numpy as np
 from PIL import Image
 from sklearn.cluster import KMeans
 import gradio as gr
+from collections import Counter
 
 def extract_palette_from_image(palette_image):
     """Extract unique colors from a palette image."""
@@ -71,13 +72,35 @@ def rgb_to_hsv(rgb):
     h = (h / 6.0) % 1.0
     return h, s, v
 
+def get_mode_color(pixel_group):
+    """Calculate the mode color of a pixel group."""
+    # Reshape to get all pixels
+    pixels = pixel_group.reshape(-1, 3)
+
+    # Convert to tuple for counting
+    pixel_tuples = [tuple(pixel) for pixel in pixels]
+
+    # Count occurrences of each color
+    color_counts = Counter(pixel_tuples)
+
+    # Get the most common color
+    mode_color = np.array(color_counts.most_common(1)[0][0])
+    return mode_color
+
 def pixelize_image(image, palette, mode='rgb', pixel_size=1):
     """Convert image to pixel art using the given palette."""
     img = Image.open(image)
     img_array = np.array(img)
 
-    # Reshape to get all pixels
-    pixels = img_array.reshape(-1, 3)
+    # Get image dimensions
+    height, width = img_array.shape[:2]
+
+    # Calculate new dimensions based on pixel_size
+    new_height = height // pixel_size
+    new_width = width // pixel_size
+
+    # Initialize output array
+    output_array = np.zeros((new_height, new_width, 3), dtype=np.uint8)
 
     # Choose distance function based on mode
     if mode == 'rgb':
@@ -87,20 +110,42 @@ def pixelize_image(image, palette, mode='rgb', pixel_size=1):
     else:  # brightness
         distance_func = brightness_distance
 
-    # Find closest palette color for each pixel
-    distances = np.array([[distance_func(pixel, palette_color) for palette_color in palette] for pixel in pixels])
-    closest_colors = palette[np.argmin(distances, axis=1)]
+    # Process each pixel group
+    for y in range(new_height):
+        for x in range(new_width):
+            # Get the pixel group
+            y_start = y * pixel_size
+            y_end = min((y + 1) * pixel_size, height)
+            x_start = x * pixel_size
+            x_end = min((x + 1) * pixel_size, width)
 
-    # Reshape back to image dimensions
-    result = closest_colors.reshape(img_array.shape)
+            pixel_group = img_array[y_start:y_end, x_start:x_end]
+
+            # Calculate mean and mode colors
+            mean_color = np.mean(pixel_group, axis=(0, 1)).astype(int)
+            mode_color = get_mode_color(pixel_group)
+
+            # Find closest palette color for mean
+            mean_distances = np.array([distance_func(mean_color, palette_color) for palette_color in palette])
+            mean_closest_color = palette[np.argmin(mean_distances)]
+            mean_min_distance = np.min(mean_distances)
+
+            # Find closest palette color for mode
+            mode_distances = np.array([distance_func(mode_color, palette_color) for palette_color in palette])
+            mode_closest_color = palette[np.argmin(mode_distances)]
+            mode_min_distance = np.min(mode_distances)
+
+            # Choose the color with the smaller distance to palette
+            if mean_min_distance <= mode_min_distance:
+                output_array[y, x] = mean_closest_color
+            else:
+                output_array[y, x] = mode_closest_color
 
     # Create output image
-    output = Image.fromarray(result.astype(np.uint8))
+    output = Image.fromarray(output_array)
 
-    # Resize if pixel_size > 1
-    if pixel_size > 1:
-        width, height = output.size
-        output = output.resize((width * pixel_size, height * pixel_size), Image.NEAREST)
+    # Resize back to original dimensions
+    output = output.resize((width, height), Image.NEAREST)
 
     return output
 

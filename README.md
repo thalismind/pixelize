@@ -79,6 +79,16 @@ Please prepare the repository for use with HuggingFace Spaces. Make sure it has 
 
 Followed by manually updating the Gradio version in the README.md frontmatter and the requirements.txt file to use the latest version.
 
+The pixelization process was not implemented correctly and was resizing the image. That was fixed with the following prompt:
+
+```none
+The pixel_size parameter currently makes the image larger, but it should make the pixels larger within the image, by combining groups of pixels on the grid given by the pixel_size. For example, if pixel_size is 2, then every 2x2 group should be the same color. If pixel_size is 4, then the groups are 4x4. Use the best color for each group based on the pixels within it.
+```
+
+```none
+The average color may not be the best color for each pixel. Try both the mean and mode, and see which one is closer to the palette colors.
+```
+
 ## License
 
 This project is open source and available under the MIT License.
