@@ -2,6 +2,8 @@
 
 A Python application that converts images into pixel art using Gradio for the user interface. The application supports both dynamic and fixed color palettes, with various color matching modes.
 
+[![Hugging Face Spaces](https://img.shields.io/badge/🤗%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces)
+
 ## Features
 
 - Convert images to pixel art with customizable pixel sizes
@@ -14,7 +16,7 @@ A Python application that converts images into pixel art using Gradio for the us
   - Brightness: Matches colors based on grayscale brightness
 - Interactive Gradio interface with drag-and-drop support
 
-## Installation
+## Local Installation
 
 1. Clone this repository
 2. Install the required dependencies:
@@ -22,7 +24,7 @@ A Python application that converts images into pixel art using Gradio for the us
 pip install -r requirements.txt
 ```
 
-## Usage
+## Local Usage
 
 1. Run the application:
 ```bash
@@ -43,6 +45,10 @@ python pixelize.py
 ## Creating a Palette Image
 
 For fixed palette mode, create an image containing the colors you want to use. Each color should be represented by at least one pixel. The order of colors doesn't matter, and you can use any arrangement of the colors in the image.
+
+## HuggingFace Spaces
+
+This application is also available as a HuggingFace Space. You can try it out directly in your browser without any installation required.
 
 ## License
 
