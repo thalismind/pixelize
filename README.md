@@ -61,6 +61,24 @@ For fixed palette mode, create an image containing the colors you want to use. E
 
 This application is also available as a HuggingFace Space. You can try it out directly in your browser without any installation required.
 
+## Prompts
+
+This application was generated using the following prompt:
+
+```none
+Please plan out and implement a Python project using a Gradio interface to convert images into pixel art. Dependencies will be fairly minimal, mostly Gradio and Pillow, but you can use a mix of scipy, numpy, and other numeric libraries for the image manipulation. The image conversion process should operate in two main modes: fixed palette and dynamic palette. In dynamic palette, a number of colors will be given, and a palette should be generated from the image to provide the best color fit. In fixed palette, a second image will be uploaded, which will contain the palette colors as multi-pixel squares (simply list the colors present in the second image to get the palette, order is not important). Please offer options to match colors based on closest RGB, closest hue, and closest brightness/grayscale. The interface should be able to convert a single image at a time and let the user drag and drop into the Gradio image upload component.
+```
+
+```none
+Please write scripts to set up the virtual environment and another script to run the program.
+```
+
+```none
+Please prepare the repository for use with HuggingFace Spaces. Make sure it has the right configuration for a Gradio space.
+```
+
+Followed by manually updating the Gradio version in the README.md frontmatter and the requirements.txt file to use the latest version.
+
 ## License
 
 This project is open source and available under the MIT License.
